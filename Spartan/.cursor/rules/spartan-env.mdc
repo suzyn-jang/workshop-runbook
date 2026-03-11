@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+# Spartan Environment Setup
+
+## Virtual Environment Activation
+Always run the following command from the root level before executing any terminal commands:
+
+```bash
+source search-and-personalisation-snp/spartan-env/bin/activate
+```
+
+This activates the `spartan-env` virtual environment to ensure commands run with the correct dependencies and configurations.
+
+## Critical Rules
+- ✅ Always activate the virtual environment before running Python scripts
+- ✅ Always activate the virtual environment before installing packages
+- ✅ Always activate the virtual environment before running tests

@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "user-design-tokens": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-design-tokens"]
+    },
+    "user-design-assets": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-design-assets"]
+    },
+    "user-localisation": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-localisation"]
+    },
+    "user-writing-guides": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-writing-guides"]
+    },
+    "user-phrase-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-phrase-search"]
+    },
+    "user-mosaic": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-mosaic"]
+    },
+    "user-design-api": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-design-api"]
+    },
+    "user-glossary": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/suzyn.jang/.cursor/projects/Users-suzyn-jang-Cursor-Spartan/mcps/user-glossary"]
+    }
+  }
+}

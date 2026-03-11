@@ -1,0 +1,122 @@
+Spartan Onboarding Doc
+Author : Tushar Bose
+SPARTAN - Search, Personalisation and Ads Analytics Agent
+The intelligent analytics agent for Search and Personalisation experiments at Grab.
+SPARTAN is a comprehensive AI-powered analytics system that automates experiment analysis, enforces quality standards, and delivers consistent, well-documented insights across all Search & Personalisation verticals.
+🚀 Setup & Installation
+	•	Install Cursor - For automated analysis
+	•	Add Hubble MCP - link (Click on add to cursor – and you are good)
+
+	•	Create Gitlab Account - You will need one. Refer to the GitLab section in How to setup Cursor and MCP servers for non-engineers 
+	•	Regenerate & Keep your Personal PAT safe somewhere - you won’t see it again!
+	•	Once you have opened the project on cursor then click (command + J) or click on toggle panel (center icon top right)  to open terminal
+
+
+	•	Once terminal is open, run the below commands sequentially to clone SPARTAN Repo
+git clone https://gitlab.myteksi.net/analytics/search-and-personalisation-snp.git 
+	•	Copy/Paste Personal PAT as the Password WHEN you start Cloning the Repo
+	•	(Verify you are in the correct directory of “search-and-personalisation-snp”. Output shall be /Users/<your name>/Documents/<your folder>/search-and-personalisation-snp) → PWD stands for Present Working Directory
+pwd
+
+	•	(After switching to correct directory where make setup exist, pls run) If fails then please follow the old setup flow (Appendix here)
+make setup
+
+
+	•	Once these commands run successfully, then go to cursor chat and paste the following:
+
+Please add the below memory to cursor: Always run `source search-and-personalisation-snp/spartan-env/bin/activate` from root level before executing any terminal commands. This activates the spartan-env virtual environment to ensure commands run with the correct dependencies and configurations.
+
+	•	Once done, you should see the below.
+
+	•	Once the above is done then go to  secrets copy.py → rename the file to secrets.py and add in your grab credentials :
+
+
+
+Done! Your setup is complete!
+===================================================================
+[Alternative] IF you do NOT have GitLab follow this link and download the code as a zip file.
+
+
+
+
+How to use SPARTAN?
+Try to use claude-4.5-sonnet (thinking) model for analysis
+
+
+Use Case
+What rules to drag to cursor chat
+Screenshot
+Additional Dependencies (if any)
+Ad-hoc data insights
+	•	rules/ folder
+	•	Relevant verticals query-bank.md
+
+
+Cursor may ask some clarifying questions so do answer those for data requests, those questions are intentionally kept to ensure data quality
+Ad-hoc metric question
+
+
+
+Experiment Summary
+	•	rules/ folder
+	•	Experiment doc in .md (markdown) format
+	•	Relevant verticals query-bank.md
+Experiment File Location
+
+
+For experiment Summary 
+
+For hypothesis driven experiment deepdive
+
+
+Experiment docs needs to be in standardised format - shared here
+Experiment Deepdive
+
+
+
+
+Note: All your adhoc or experiment results would be stored under the vertical_xx folder depending on the request + request type. If its ad hoc then it will be stored under projects folder inside vertical_xx folder
+
+Experiment Analysis Pre Requisites
+	•	Correct format experiment documentation (Sample - Food Search Batch Normalisation and Model Hygiene Experiment)
+	•	Important fields: Experiment start date, Experiment end date, Experiment group name, Experiment name, Experiment randomisation unit
+	•	Usually this doc info and format would be maintained by PA/DS/Engg
+	•	Experiment doc can easily be downloaded into .md format and fed into SPARTAN for experiment analysis and deepdives
+
+[IMPORTANT] How to use data and reports produced by SPARTAN?
+
+
+Appendix
+Old Setup Flow
+Tips for Windows Users: As all the listed commands are generated based on Mac OS, some of them may not be compatible with Windows. To circumvent this, you can put these commands in a chat box in Cursor, which will adjust based on your system setting.
+E.g. # Open Chat box in Cursor, prompt "go to SNP Agentic PA (SNPA) in terminal"
+
+cd search-and-personalisation-snp/
+cd SNP\ Agentic\ PA\ \(SNPA\)/
+
+You should see below directory name in terminal after above 2 steps
+
+
+python3 -m venv spartan-env
+
+source spartan-env/bin/activate
+
+pip install statsmodels==0.14.5 linearmodels==4.26 pyhdfe==0.1.0
+
+pip install -r utils/requirements.txt
+
+
+
+(Below is Optional, is for sig test)
+
+cd spartan-env
+
+pip install grabx-decision-engine==0.7.1 --no-deps --extra-index-url https://public:wpXHV2HzsK15xm8H3MuU@gitlab.myteksi.net/api/v4/projects/4221/packages/pypi/simple   If above fail, try below:
+pip download grabx-decision-engine==0.7.1 --no-deps --extra-index-url https://public:wpXHV2HzsK15xm8H3MuU@gitlab.myteksi.net/api/v4/projects/4221/packages/pypi/simple --python-version 3.10 --only-binary=:all: && cd lib/python*/site-packages/ && unzip -q ../../../grabx_decision_engine-*.whl && cd ../../../ && rm grabx_decision_engine-*.whl && python -c "import experimetrics; print('✅ Installation complete!')"
+
+
+
+
+
+ACE MCP Access - [Optional], for more comprehensive analytics guides on food, mart, dineout etc. Follow this link for installation and this doc for troubleshooting.
+

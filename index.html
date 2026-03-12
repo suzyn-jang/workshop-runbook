@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Would You Grab?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Courier New', monospace, cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* INTRO SCREEN */
+        #intro {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .intro-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            color: #7b2cbf;
+            -webkit-text-stroke: 8px #fff;
+            text-stroke: 8px #fff;
+            paint-order: stroke fill;
+            filter: drop-shadow(6px 6px 0px rgba(0,0,0,0.3));
+        }
+
+        .intro-subtitle {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+
+        .hint-boxes {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .hint-box {
+            flex: 1;
+            padding: 30px 20px;
+            border-radius: 0px;
+            font-weight: 600;
+            font-size: 20px;
+            border: none;
+            box-shadow: none;
+            transform: none;
+            text-align: center;
+        }
+
+        .hint-box.skip {
+            background: #ff6b9d;
+            color: #fff;
+        }
+
+        .hint-box.grab {
+            background: #4ecdc4;
+            color: #fff;
+        }
+
+        .hint-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .hint-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #7b2cbf;
+            -webkit-text-stroke: 3px #fff;
+            text-stroke: 3px #fff;
+            paint-order: stroke fill;
+            text-transform: uppercase;
+        }
+
+        .hint-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+        }
+
+        .instruction {
+            font-size: 15px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            font-weight: 600;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            background: #ffe66d;
+            color: #1a1a1a;
+            border: 4px solid #000;
+            padding: 18px 50px;
+            border-radius: 0px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 6px 6px 0px #000;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        /* GAME SCREEN */
+        #game {
+            max-width: 450px;
+            margin: 0 auto;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            text-align: center;
+            font-weight: 900;
+            color: #7b2cbf;
+            margin-bottom: 20px;
+            font-size: 18px;
+            -webkit-text-stroke: 4px #fff;
+            text-stroke: 4px #fff;
+            paint-order: stroke fill;
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .home-btn {
+            position: absolute;
+            left: 0;
+            background: #ffe66d;
+            color: #1a1a1a;
+            border: 4px solid #000;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 4px 4px 0px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        .home-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        .home-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .card-container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 0px;
+            overflow: hidden;
+            box-shadow: 10px 10px 0px #000;
+            cursor: grab;
+            touch-action: none;
+            border: 5px solid #000;
+            transform: rotate(-1deg);
+        }
+
+        .card:active {
+            cursor: grabbing;
+        }
+
+        .card.next {
+            transform: scale(0.95);
+            opacity: 0.5;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .card.animating {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: #e0e0e0;
+            border-bottom: 5px solid #000;
+        }
+
+        .card-content {
+            padding: 20px;
+            background: #fff5f8;
+        }
+
+        .restaurant-name {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            color: #7b2cbf;
+            -webkit-text-stroke: 3px #fff;
+            text-stroke: 3px #fff;
+            paint-order: stroke fill;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cuisine-price {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 16px;
+        }
+
+        .rating-text {
+            color: #333;
+        }
+
+        .delivery-info {
+            display: flex;
+            gap: 15px;
+            color: #333;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .discount-badge {
+            background: #00f5d4;
+            color: #1a1a1a;
+            padding: 8px 14px;
+            border-radius: 0px;
+            font-size: 13px;
+            font-weight: 900;
+            display: inline-block;
+            margin-bottom: 10px;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            text-transform: uppercase;
+        }
+
+        .review-snippet {
+            background: #fff3cd;
+            border-left: 5px solid #ff006e;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-style: italic;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+            font-weight: 600;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+        }
+
+        .ai-summary {
+            background: #b8f2e6;
+            padding: 10px 14px;
+            border-radius: 0px;
+            font-size: 13px;
+            color: #1a1a1a;
+            margin-top: 8px;
+            border: 3px solid #000;
+            font-weight: 700;
+        }
+
+        .swipe-indicator {
+            position: absolute;
+            top: 40%;
+            font-size: 64px;
+            font-weight: 900;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s;
+            z-index: 10;
+            -webkit-text-stroke: 6px #fff;
+            text-stroke: 6px #fff;
+            paint-order: stroke fill;
+            filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.3));
+        }
+
+        .swipe-indicator.grab {
+            right: 40px;
+            color: #00f5d4;
+        }
+
+        .swipe-indicator.skip {
+            left: 40px;
+            color: #ff006e;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .action-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 5px solid #000;
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 6px 6px 0px #000;
+            font-weight: 900;
+        }
+
+        .action-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .action-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .action-btn.skip {
+            background: #ff006e;
+            color: white;
+        }
+
+        .action-btn.grab {
+            background: #00f5d4;
+            color: #1a1a1a;
+        }
+
+        .action-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* SWIPE TUTORIAL OVERLAY */
+        .swipe-tutorial {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 0, 110, 0.9) 0%, rgba(0, 245, 212, 0.9) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 40px 20px;
+            z-index: 100;
+            border-radius: 0px;
+            transition: opacity 0.3s;
+            pointer-events: all;
+            border: 5px solid #000;
+        }
+
+        .swipe-tutorial.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .tutorial-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .tutorial-side {
+            flex: 1;
+            text-align: center;
+            color: #fff;
+        }
+
+        .tutorial-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: swipeHint 1.5s ease-in-out infinite;
+        }
+
+        .tutorial-side.left .tutorial-icon {
+            animation-name: swipeLeft;
+        }
+
+        .tutorial-side.right .tutorial-icon {
+            animation-name: swipeRight;
+        }
+
+        @keyframes swipeLeft {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-15px); }
+        }
+
+        @keyframes swipeRight {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(15px); }
+        }
+
+        .tutorial-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            color: #7b2cbf;
+            -webkit-text-stroke: 3px #fff;
+            text-stroke: 3px #fff;
+            paint-order: stroke fill;
+            text-transform: uppercase;
+        }
+
+        .tutorial-subtitle {
+            font-size: 13px;
+            line-height: 1.4;
+            font-weight: 700;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .tutorial-ok-btn {
+            background: #ffe66d;
+            color: #1a1a1a;
+            border: 4px solid #000;
+            padding: 16px 50px;
+            border-radius: 0px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 6px 6px 0px #000;
+            text-transform: uppercase;
+            transition: transform 0.1s;
+        }
+
+        .tutorial-ok-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .tutorial-ok-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        /* RESULTS SCREEN */
+        #results {
+            max-width: 500px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .emoji-face {
+            font-size: 80px;
+            text-align: center;
+            margin: 30px 0;
+            filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.3));
+        }
+
+        .reveal-box {
+            background: #ffe66d;
+            border-radius: 0px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 6px 6px 0px #000;
+            border: 4px solid #000;
+        }
+
+        .reveal-label {
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #7b2cbf;
+            -webkit-text-stroke: 2px #fff;
+            text-stroke: 2px #fff;
+            paint-order: stroke fill;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .sub-result {
+            font-size: 16px;
+            font-weight: 900;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .debrief-section {
+            margin: 30px 0;
+        }
+
+        .debrief-label {
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #7b2cbf;
+            -webkit-text-stroke: 3px #fff;
+            text-stroke: 3px #fff;
+            paint-order: stroke fill;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            text-align: center;
+            filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.3));
+        }
+
+        .debrief-line {
+            background: #ffa5d8;
+            border-left: 6px solid #ff006e;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 0px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1a1a1a;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            font-weight: 700;
+        }
+
+        .chat-prompt {
+            background: #b8f2e6;
+            border-radius: 0px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 6px 6px 0px #000;
+            border: 4px solid #000;
+        }
+
+        .chat-label {
+            font-size: 13px;
+            font-weight: 900;
+            color: #7b2cbf;
+            -webkit-text-stroke: 2px #fff;
+            text-stroke: 2px #fff;
+            paint-order: stroke fill;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .chat-text {
+            font-size: 15px;
+            color: #1a1a1a;
+            line-height: 1.5;
+            font-style: italic;
+            font-weight: 700;
+        }
+
+        .play-again-btn {
+            background: #ff006e;
+            color: white;
+            border: 4px solid #000;
+            padding: 16px 40px;
+            border-radius: 0px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            margin: 0 auto;
+            display: block;
+            transition: transform 0.1s;
+            box-shadow: 6px 6px 0px #000;
+            text-transform: uppercase;
+        }
+
+        .play-again-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .play-again-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        @media (max-width: 500px) {
+            .intro-title {
+                font-size: 36px;
+            }
+
+            .card {
+                max-width: 100%;
+            }
+
+            .card-image {
+                height: 250px;
+            }
+
+            .hint-boxes {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- INTRO SCREEN -->
+    <div id="intro" class="screen active">
+        <div>
+            <h1 class="intro-title">Would You Grab?</h1>
+            <p class="intro-subtitle">6 restaurant cards. Gut reaction only.</p>
+            
+            <div class="hint-boxes">
+                <div class="hint-box skip">
+                    <div class="hint-icon">👈</div>
+                    <div class="hint-title">Not for you?</div>
+                    <div class="hint-subtitle">Swipe left if not</div>
+                </div>
+                <div class="hint-box grab">
+                    <div class="hint-icon">👉</div>
+                    <div class="hint-title">Like what you see?</div>
+                    <div class="hint-subtitle">Swipe right to grab</div>
+                </div>
+            </div>
+
+            <p class="instruction">Swipe right to grab, left to skip<br>or use the buttons</p>
+
+            <button class="btn" onclick="startGame()">Start</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game" class="screen">
+        <div class="progress-bar" id="progress">
+            <button class="home-btn" onclick="goHome()">↩</button>
+            <span>1 / 6</span>
+        </div>
+        
+        <div class="card-container" id="cardContainer">
+            <!-- Cards will be inserted here -->
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn skip disabled" id="skipBtn" onclick="swipeCard('skip')">✗</button>
+            <button class="action-btn grab disabled" id="grabBtn" onclick="swipeCard('grab')">✓</button>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results" class="screen">
+        <div class="emoji-face" id="emojiFace">😃</div>
+
+        <div class="reveal-box">
+            <div class="reveal-label">THE REVEAL</div>
+            <div class="sub-result" id="subResult"></div>
+        </div>
+
+        <div class="debrief-section">
+            <div class="debrief-label">FACILITATOR — CLICK TO READ OUT</div>
+            <div class="debrief-line">That hesitation? That's what most GrabFood users feel every time they browse.</div>
+            <div class="debrief-line">6 cards. 6 gut reactions. That's exactly how users browse GrabFood.</div>
+            <div class="debrief-line">Notice the difference with the cards that had a review signal?</div>
+            <div class="debrief-line">Every SKIP is a review signal GrabFood failed to show at the right moment.</div>
+        </div>
+
+        <div class="chat-prompt">
+            <div class="chat-label">Leave in Figjam your thoughts</div>
+            <div class="chat-text">Which card made you most confident and what made you hesitate on the others?</div>
+        </div>
+
+        <button class="play-again-btn" onclick="playAgain()">↩ Play Again</button>
+    </div>
+
+    <script>
+        const cards = [
+            {
+                id: 1,
+                name: "Lim's Curry House",
+                cuisine: "Indian · $$",
+                rating: 4.3,
+                reviews: 856,
+                deliveryTime: "25-35 min",
+                deliveryFee: "$2.50",
+                discount: "10% off · min spend $20",
+                image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Som Tam Sisters",
+                cuisine: "Thai · $$",
+                rating: 4.7,
+                reviews: 3200,
+                deliveryTime: "25-35 min",
+                deliveryFee: "$2.00",
+                discount: "20% off · min spend $15",
+                image: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&h=300&fit=crop",
+                hasSignal: true,
+                reviewSnippet: "Best pad thai I've had in Singapore — the wok hei is real 🔥",
+                aiSummary: "💬 94% say portions are generous, flavors authentic"
+            },
+            {
+                id: 3,
+                name: "Tokyo Tonkotsu Bar",
+                cuisine: "Japanese · $$$",
+                rating: 4.6,
+                reviews: 1480,
+                deliveryTime: "30-40 min",
+                deliveryFee: "$3.50",
+                discount: "15% off · min spend $30",
+                image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Burger Lab SG",
+                cuisine: "Western · $$",
+                rating: 4.2,
+                reviews: 967,
+                deliveryTime: "30-40 min",
+                deliveryFee: "$2.99",
+                discount: "Free delivery · min spend $30",
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop"
+            },
+            {
+                id: 5,
+                name: "Char Kway Teow King",
+                cuisine: "Singaporean · $",
+                rating: 4.8,
+                reviews: 4500,
+                deliveryTime: "20-30 min",
+                deliveryFee: "$1.99",
+                discount: "Free delivery · min spend $15",
+                image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=300&fit=crop",
+                hasSignal: true,
+                reviewSnippet: "Worth the wait. The smoky flavor reminds me of the hawker days.",
+                aiSummary: "💬 91% recommend the signature char kway teow"
+            },
+            {
+                id: 6,
+                name: "Wok This Way",
+                cuisine: "Chinese · $",
+                rating: 4.1,
+                reviews: 2100,
+                deliveryTime: "20-30 min",
+                deliveryFee: "$1.99",
+                discount: "Free delivery · min spend $25",
+                image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400&h=300&fit=crop"
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let results = [];
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let currentCard = null;
+
+        let showTutorial = true;
+
+        function startGame() {
+            document.getElementById('intro').classList.remove('active');
+            document.getElementById('game').classList.add('active');
+            currentCardIndex = 0;
+            results = [];
+            showTutorial = true;
+            
+            // Disable buttons initially
+            document.getElementById('skipBtn').classList.add('disabled');
+            document.getElementById('grabBtn').classList.add('disabled');
+            
+            renderCards();
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = '';
+
+            if (currentCardIndex >= cards.length) {
+                showResults();
+                return;
+            }
+
+            // Render next card (background)
+            if (currentCardIndex + 1 < cards.length) {
+                const nextCardEl = createCardElement(cards[currentCardIndex + 1]);
+                nextCardEl.classList.add('next');
+                container.appendChild(nextCardEl);
+            }
+
+            // Render current card (top)
+            const currentCardEl = createCardElement(cards[currentCardIndex]);
+            container.appendChild(currentCardEl);
+            currentCard = currentCardEl;
+
+            // Add indicators
+            const grabIndicator = document.createElement('div');
+            grabIndicator.className = 'swipe-indicator grab';
+            grabIndicator.textContent = 'GRAB ✓';
+            grabIndicator.id = 'grabIndicator';
+            currentCard.appendChild(grabIndicator);
+
+            const skipIndicator = document.createElement('div');
+            skipIndicator.className = 'swipe-indicator skip';
+            skipIndicator.textContent = 'SKIP ✗';
+            skipIndicator.id = 'skipIndicator';
+            currentCard.appendChild(skipIndicator);
+
+            // Add tutorial overlay on first card
+            if (showTutorial && currentCardIndex === 0) {
+                const tutorial = document.createElement('div');
+                tutorial.className = 'swipe-tutorial';
+                tutorial.id = 'swipeTutorial';
+                tutorial.innerHTML = `
+                    <div class="tutorial-content">
+                        <div class="tutorial-side left">
+                            <div class="tutorial-icon">👈</div>
+                            <div class="tutorial-title">Not for you?</div>
+                            <div class="tutorial-subtitle">Swipe left if not</div>
+                        </div>
+                        <div class="tutorial-side right">
+                            <div class="tutorial-icon">👉</div>
+                            <div class="tutorial-title">Like what you see?</div>
+                            <div class="tutorial-subtitle">Swipe right to grab</div>
+                        </div>
+                    </div>
+                    <button class="tutorial-ok-btn" onclick="closeTutorial()">OK</button>
+                `;
+                currentCard.appendChild(tutorial);
+            }
+
+            setupDrag(currentCard);
+            updateProgress();
+        }
+
+        function createCardElement(card) {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card';
+            
+            let signalContent = '';
+            if (card.hasSignal) {
+                signalContent = `
+                    <div class="review-snippet">"${card.reviewSnippet}"</div>
+                    <div class="ai-summary">${card.aiSummary}</div>
+                `;
+            }
+
+            cardEl.innerHTML = `
+                <img class="card-image" src="${card.image}" alt="${card.name}">
+                <div class="card-content">
+                    <h2 class="restaurant-name">${card.name}</h2>
+                    <div class="cuisine-price">${card.cuisine}</div>
+                    <div class="rating">
+                        <span class="stars">⭐</span>
+                        <span>${card.rating}</span>
+                        <span class="rating-text">· ${(card.reviews / 1000).toFixed(1)}K reviews</span>
+                    </div>
+                    <div class="delivery-info">
+                        <span>${card.deliveryTime}</span>
+                        <span>·</span>
+                        <span>${card.deliveryFee}</span>
+                    </div>
+                    <div class="discount-badge">${card.discount}</div>
+                    ${signalContent}
+                </div>
+            `;
+            
+            return cardEl;
+        }
+
+        function setupDrag(card) {
+            // Mouse events
+            card.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+
+            // Touch events
+            card.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+        }
+
+        function dragStart(e) {
+            if (e.target.closest('.action-btn')) return;
+            
+            // Don't start drag if tutorial is visible
+            if (showTutorial && document.getElementById('swipeTutorial')) {
+                return;
+            }
+            
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            currentX = startX;
+            currentCard.style.transition = 'none';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            const rotation = diff * 0.1;
+            
+            currentCard.style.transform = `translateX(${diff}px) rotate(${rotation}deg)`;
+
+            const grabIndicator = document.getElementById('grabIndicator');
+            const skipIndicator = document.getElementById('skipIndicator');
+
+            if (diff > 0) {
+                const opacity = Math.min(Math.abs(diff) / 100, 1);
+                grabIndicator.style.opacity = opacity;
+                skipIndicator.style.opacity = 0;
+            } else {
+                const opacity = Math.min(Math.abs(diff) / 100, 1);
+                skipIndicator.style.opacity = opacity;
+                grabIndicator.style.opacity = 0;
+            }
+        }
+
+        function dragEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+
+            const diff = currentX - startX;
+            const threshold = 80;
+
+            if (Math.abs(diff) > threshold) {
+                const direction = diff > 0 ? 'grab' : 'skip';
+                animateCardExit(direction);
+            } else {
+                currentCard.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                currentCard.style.transform = '';
+                document.getElementById('grabIndicator').style.opacity = 0;
+                document.getElementById('skipIndicator').style.opacity = 0;
+            }
+        }
+
+        function swipeCard(direction) {
+            // Disable buttons if tutorial is visible
+            if (showTutorial && document.getElementById('swipeTutorial')) {
+                return;
+            }
+            
+            animateCardExit(direction);
+        }
+
+        function animateCardExit(direction) {
+            const multiplier = direction === 'grab' ? 1 : -1;
+            currentCard.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            currentCard.style.transform = `translateX(${multiplier * 600}px) rotate(${multiplier * 30}deg)`;
+            
+            results.push({
+                card: cards[currentCardIndex],
+                action: direction
+            });
+
+            setTimeout(() => {
+                currentCardIndex++;
+                renderCards();
+            }, 300);
+        }
+
+        function updateProgress() {
+            const progressText = document.querySelector('#progress span');
+            if (progressText) {
+                progressText.textContent = `${currentCardIndex + 1} / 6`;
+            }
+        }
+
+        function showResults() {
+            document.getElementById('game').classList.remove('active');
+            document.getElementById('results').classList.add('active');
+
+            // Calculate signal cards grabbed (cards 2 and 5)
+            const signalCardsGrabbed = results.filter(r => 
+                r.card.hasSignal && r.action === 'grab'
+            ).length;
+
+            // Set emoji face based on whether both signal cards were grabbed
+            let emoji = signalCardsGrabbed === 2 ? '😃' : '😯';
+            document.getElementById('emojiFace').textContent = emoji;
+
+            // Set message based on signal cards grabbed
+            let message = '';
+            if (signalCardsGrabbed === 2) {
+                message = 'You grabbed 2 of 2 signal cards. The signals worked on you 👀';
+            } else if (signalCardsGrabbed === 1) {
+                message = 'You grabbed 1 of 2 signal cards. One signal got you. What made the other one miss?';
+            } else {
+                message = 'You grabbed 0 of 2 signal cards. Even with signals, you weren\'t convinced. Why not?';
+            }
+
+            document.getElementById('subResult').textContent = message;
+        }
+
+        function playAgain() {
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('intro').classList.add('active');
+        }
+
+        function closeTutorial() {
+            const tutorial = document.getElementById('swipeTutorial');
+            if (tutorial) {
+                tutorial.classList.add('hidden');
+                setTimeout(() => tutorial.remove(), 300);
+            }
+            showTutorial = false;
+            
+            // Enable buttons after closing tutorial
+            document.getElementById('skipBtn').classList.remove('disabled');
+            document.getElementById('grabBtn').classList.remove('disabled');
+        }
+
+        function goHome() {
+            if (confirm('Exit game and return to home?')) {
+                document.getElementById('game').classList.remove('active');
+                document.getElementById('intro').classList.add('active');
+                currentCardIndex = 0;
+                results = [];
+                showTutorial = true;
+            }
+        }
+    </script>
+</body>
+</html>
